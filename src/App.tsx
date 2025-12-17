@@ -91,7 +91,7 @@ function App() {
         // ============================================
         if (INCLUDE_MOCK_USERS) {
           // Merge real users with mock users (avoid duplicates by email)
-          const realUserEmails = new Set(data.map(u => u.email.toLowerCase()))
+          const realUserEmails = new Set(data.map((u: { email: string }) => u.email.toLowerCase()))
           const additionalMockUsers = MOCK_USERS.filter(
             mockUser => !realUserEmails.has(mockUser.email.toLowerCase())
           )

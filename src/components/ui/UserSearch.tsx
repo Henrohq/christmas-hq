@@ -60,14 +60,13 @@ export function UserSearch({ onClose }: UserSearchProps) {
 
       // Try RPC function first, fallback to direct query
       try {
-        const { data, error } = await supabase.rpc('search_users', {
-          search_query: query,
-        })
+        const rpcCall = supabase.rpc('search_users', { search_query: query } as any)
+        const { data, error } = await (rpcCall as unknown as Promise<{ data: Profile[] | null; error: any }>)
 
         if (error) throw error
 
         if (data) {
-          setResults(data.filter((u) => u.id !== user?.id))
+          setResults((data as Profile[]).filter((u: Profile) => u.id !== user?.id))
         }
       } catch {
         // Fallback: direct query with ILIKE

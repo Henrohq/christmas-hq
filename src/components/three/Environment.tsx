@@ -44,7 +44,7 @@ export function Snowfall() {
   const pointsRef = useRef<THREE.Points>(null)
   const velocitiesRef = useRef<Float32Array>()
 
-  const { positions, velocities } = useMemo(() => {
+  const { positions } = useMemo(() => {
     const count = 2000
     const positions = new Float32Array(count * 3)
     const velocities = new Float32Array(count)
@@ -57,7 +57,7 @@ export function Snowfall() {
     }
 
     velocitiesRef.current = velocities
-    return { positions, velocities }
+    return { positions }
   }, [])
 
   useFrame((state) => {

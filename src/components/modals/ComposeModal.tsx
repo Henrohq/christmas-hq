@@ -101,7 +101,7 @@ export function ComposeModal({ recipientId }: ComposeModalProps) {
       console.log('[ComposeModal] Supabase configured, inserting message with 10s timeout...')
       
       // Wrap the insert with timeout (10 seconds for mobile networks)
-      const insertPromise = supabase
+      const insertQuery = supabase
         .from('messages')
         .insert({
           recipient_id: recipientId,
@@ -114,7 +114,7 @@ export function ComposeModal({ recipientId }: ComposeModalProps) {
         .select()
         .single()
 
-      const { data: insertedMessage, error: insertError } = await withTimeout(insertPromise, 10000)
+      const { data: insertedMessage, error: insertError } = await withTimeout(insertQuery as unknown as Promise<{ data: Message | null; error: any }>, 10000)
 
       console.log('[ComposeModal] Insert result:', { data: insertedMessage, error: insertError })
 
@@ -134,12 +134,12 @@ export function ComposeModal({ recipientId }: ComposeModalProps) {
       // Refresh missions progress after sending message (with timeout, don't block if it fails)
       try {
         console.log('[ComposeModal] Updating missions progress...')
-        const missionPromise = supabase
+        const missionQuery = supabase
           .from('messages')
           .select('recipient_id')
           .eq('sender_id', user.id)
         
-        const { data } = await withTimeout(missionPromise, 5000)
+        const { data } = await withTimeout(missionQuery as unknown as Promise<{ data: Array<{ recipient_id: string }> | null; error: any }>, 5000)
         
         if (data) {
           const uniqueRecipients = new Set(data.map((m: any) => m.recipient_id))
