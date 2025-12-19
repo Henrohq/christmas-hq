@@ -45,6 +45,19 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Cosmic gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Letter paper texture */
 .letter-paper {
   background: linear-gradient(180deg, #fffef5 0%, #f5f0e1 100%);

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { useStore } from '@/store/useStore'
+import { hasCosmicStarAccess, getCosmicStarLockedMessage, COSMIC_STAR_CONFIG } from '@/lib/specialAccess'
 
 interface TreeCustomizerProps {
   currentTreeColor: string
@@ -30,6 +31,13 @@ const STAR_COLORS = [
   { name: 'Ice Blue', value: '#87ceeb', locked: true },
   { name: 'Ruby Red', value: '#e31c3d', locked: true },
   { name: 'Amethyst', value: '#9966cc', locked: true },
+  { 
+    name: 'Cosmic Gradient', 
+    value: COSMIC_STAR_CONFIG.id, 
+    locked: true, 
+    isSpecial: true,
+    requiresSpecialAccess: true 
+  },
 ]
 
 const SKY_COLORS = [
@@ -190,35 +198,60 @@ export function TreeCustomizer({
             </label>
             <div className="flex gap-2 flex-wrap">
               {STAR_COLORS.map((color) => {
-                const locked = color.locked && !isUnlocked
+                // Check for special Cosmic Star access
+                const hasSpecialAccess = color.requiresSpecialAccess 
+                  ? hasCosmicStarAccess(user?.email)
+                  : true
+                
+                const locked = color.locked && !isUnlocked && !hasSpecialAccess
+                const isCosmicStar = color.value === COSMIC_STAR_CONFIG.id
+                
                 return (
                   <div key={color.value} className="relative group">
                     <button
                       type="button"
                       onClick={() => !locked && setStarColor(color.value)}
                       disabled={locked}
-                      className={`w-9 h-9 rounded-lg transition-all relative ${
+                      className={`w-9 h-9 rounded-lg transition-all relative overflow-hidden ${
                         starColor === color.value
                           ? 'ring-2 ring-white scale-110'
                           : locked
                           ? 'opacity-40 cursor-not-allowed'
                           : 'hover:scale-105 opacity-70 hover:opacity-100'
                       }`}
-                      style={{ 
-                        backgroundColor: color.value,
-                        boxShadow: locked ? 'none' : `0 0 8px ${color.value}40`
+                      style={{
+                        ...(isCosmicStar
+                          ? {
+                              background: 'linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff0088, #00ff88, #ff00ff)',
+                              backgroundSize: '400% 400%',
+                              animation: !locked ? 'gradientShift 3s ease infinite' : undefined,
+                            }
+                          : {
+                              backgroundColor: color.value,
+                            }
+                        ),
+                        boxShadow: locked ? 'none' : isCosmicStar ? '0 0 12px #ff00ff80' : `0 0 8px ${color.value}40`,
                       }}
                       title={color.name}
                     >
                       {locked && (
-                        <span className="absolute inset-0 flex items-center justify-center text-white text-sm">
+                        <span className="absolute inset-0 flex items-center justify-center text-white text-sm drop-shadow-lg">
                           🔒
+                        </span>
+                      )}
+                      {isCosmicStar && !locked && (
+                        <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold drop-shadow-lg">
+                          ✨
                         </span>
                       )}
                     </button>
                     {locked && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        Complete missions to unlock!
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-black/95 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 max-w-xs text-center border border-purple-500/30">
+                        {color.requiresSpecialAccess ? (
+                          <span className="text-purple-300">{getCosmicStarLockedMessage()}</span>
+                        ) : (
+                          'Complete missions to unlock!'
+                        )}
                       </div>
                     )}
                   </div>

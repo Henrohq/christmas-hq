@@ -139,6 +139,243 @@ export function Starfield() {
   )
 }
 
+// Snowman component
+function Snowman({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      {/* Bottom snowball */}
+      <mesh position={[0, 0.6, 0]} castShadow>
+        <sphereGeometry args={[0.6, 16, 16]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
+      </mesh>
+      
+      {/* Middle snowball */}
+      <mesh position={[0, 1.5, 0]} castShadow>
+        <sphereGeometry args={[0.45, 16, 16]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
+      </mesh>
+      
+      {/* Head snowball */}
+      <mesh position={[0, 2.2, 0]} castShadow>
+        <sphereGeometry args={[0.35, 16, 16]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.9} />
+      </mesh>
+      
+      {/* Carrot nose */}
+      <mesh position={[0, 2.2, 0.35]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <coneGeometry args={[0.06, 0.25, 8]} />
+        <meshStandardMaterial color="#ff6600" />
+      </mesh>
+      
+      {/* Eyes */}
+      <mesh position={[-0.12, 2.3, 0.3]} castShadow>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      <mesh position={[0.12, 2.3, 0.3]} castShadow>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      {/* Smile (coal) */}
+      {[-0.15, -0.075, 0, 0.075, 0.15].map((x, i) => (
+        <mesh key={i} position={[x, 2.05, 0.32]} castShadow>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+      ))}
+      
+      {/* Buttons */}
+      {[1.7, 1.4, 1.1].map((y, i) => (
+        <mesh key={i} position={[0, y, 0.43]} castShadow>
+          <sphereGeometry args={[0.05, 8, 8]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+      ))}
+      
+      {/* Stick arms */}
+      <mesh position={[-0.6, 1.6, 0]} rotation={[0, 0, -Math.PI / 4]} castShadow>
+        <cylinderGeometry args={[0.03, 0.03, 0.8, 6]} />
+        <meshStandardMaterial color="#654321" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.6, 1.6, 0]} rotation={[0, 0, Math.PI / 4]} castShadow>
+        <cylinderGeometry args={[0.03, 0.03, 0.8, 6]} />
+        <meshStandardMaterial color="#654321" roughness={0.9} />
+      </mesh>
+      
+      {/* Top hat */}
+      <group position={[0, 2.55, 0]}>
+        {/* Brim */}
+        <mesh position={[0, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.4, 0.4, 0.05, 16]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+        {/* Hat top */}
+        <mesh position={[0, 0.25, 0]} castShadow>
+          <cylinderGeometry args={[0.25, 0.25, 0.5, 16]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+      </group>
+    </group>
+  )
+}
+
+// Footsteps in snow
+function Footsteps({ decorationLevel }: { decorationLevel: 0 | 1 | 2 | 3 | 4 }) {
+  const footsteps = useMemo(() => {
+    if (decorationLevel === 0) return []
+    
+    const steps: { position: [number, number, number]; rotation: number; side: 'left' | 'right' }[] = []
+    const stepCount = Math.min(decorationLevel * 3, 12) // Up to 12 footsteps
+    
+    // Create a path of footsteps
+    for (let i = 0; i < stepCount; i++) {
+      const progress = i / stepCount
+      const angle = Math.PI * 0.4 + progress * Math.PI * 0.3 // Curved path
+      const distance = 8 + progress * 6
+      
+      steps.push({
+        position: [
+          Math.cos(angle) * distance,
+          -0.48,
+          Math.sin(angle) * distance,
+        ],
+        rotation: angle + (i % 2 === 0 ? -0.15 : 0.15),
+        side: i % 2 === 0 ? 'left' : 'right',
+      })
+    }
+    
+    return steps
+  }, [decorationLevel])
+  
+  return (
+    <group>
+      {footsteps.map((step, i) => (
+        <mesh
+          key={i}
+          position={step.position}
+          rotation={[-Math.PI / 2, step.rotation, 0]}
+        >
+          {/* Footprint shape (simple ellipse) */}
+          <circleGeometry args={[0.15, 16]} />
+          <meshStandardMaterial 
+            color="#e8e8ff" 
+            transparent 
+            opacity={0.4}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+// Santa's Sled
+function SantaSled({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position} rotation={[0, Math.PI * 0.15, 0]}>
+      {/* Sled base */}
+      <mesh position={[0, 0.1, 0]} castShadow>
+        <boxGeometry args={[1.5, 0.1, 0.8]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.8} />
+      </mesh>
+      
+      {/* Sled sides */}
+      <mesh position={[-0.7, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.1, 0.5, 0.8]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.8} />
+      </mesh>
+      <mesh position={[0.7, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.1, 0.5, 0.8]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.8} />
+      </mesh>
+      
+      {/* Sled back */}
+      <mesh position={[0, 0.4, -0.35]} castShadow>
+        <boxGeometry args={[1.4, 0.7, 0.1]} />
+        <meshStandardMaterial color="#8B4513" roughness={0.8} />
+      </mesh>
+      
+      {/* Curved runners (skis) */}
+      <mesh position={[-0.6, -0.05, 0.1]} rotation={[-0.1, 0, 0]} castShadow>
+        <boxGeometry args={[0.08, 0.08, 1.2]} />
+        <meshStandardMaterial color="#4a4a4a" metalness={0.6} />
+      </mesh>
+      <mesh position={[0.6, -0.05, 0.1]} rotation={[-0.1, 0, 0]} castShadow>
+        <boxGeometry args={[0.08, 0.08, 1.2]} />
+        <meshStandardMaterial color="#4a4a4a" metalness={0.6} />
+      </mesh>
+      
+      {/* Gift boxes in sled */}
+      <mesh position={[-0.2, 0.35, 0]} castShadow>
+        <boxGeometry args={[0.3, 0.3, 0.3]} />
+        <meshStandardMaterial color="#c41e3a" />
+      </mesh>
+      <mesh position={[0.3, 0.35, 0.1]} castShadow>
+        <boxGeometry args={[0.25, 0.25, 0.25]} />
+        <meshStandardMaterial color="#228b22" />
+      </mesh>
+      <mesh position={[0.1, 0.55, -0.1]} castShadow>
+        <boxGeometry args={[0.2, 0.2, 0.2]} />
+        <meshStandardMaterial color="#1e90ff" />
+      </mesh>
+      
+      {/* Ribbons on gifts */}
+      <mesh position={[-0.2, 0.35, 0]} castShadow>
+        <boxGeometry args={[0.32, 0.04, 0.04]} />
+        <meshStandardMaterial color="#ffd700" />
+      </mesh>
+      <mesh position={[0.3, 0.35, 0.1]} castShadow>
+        <boxGeometry args={[0.27, 0.04, 0.04]} />
+        <meshStandardMaterial color="#ffd700" />
+      </mesh>
+    </group>
+  )
+}
+
+// Landscape Decorations - scales with message count
+export function LandscapeDecorations({ decorationLevel }: { decorationLevel: 0 | 1 | 2 | 3 | 4 }) {
+  const snowmenPositions = useMemo(() => {
+    if (decorationLevel < 2) return []
+    
+    // Add snowmen at level 2+
+    const positions: [number, number, number][] = [
+      [6, -0.5, 8],  // Front right
+      [-7, -0.5, 6], // Front left
+    ]
+    
+    // Add more snowmen at higher levels
+    if (decorationLevel >= 3) {
+      positions.push([-5, -0.5, -10]) // Back left
+    }
+    if (decorationLevel >= 4) {
+      positions.push([8, -0.5, -8])   // Back right
+    }
+    
+    return positions
+  }, [decorationLevel])
+  
+  const sledPosition = useMemo((): [number, number, number] | null => {
+    if (decorationLevel < 3) return null
+    return [10, -0.5, -5] // Back right area
+  }, [decorationLevel])
+  
+  return (
+    <group>
+      {/* Footsteps (appear at level 1+) */}
+      <Footsteps decorationLevel={decorationLevel} />
+      
+      {/* Snowmen (appear at level 2+) */}
+      {snowmenPositions.map((pos, i) => (
+        <Snowman key={i} position={pos} />
+      ))}
+      
+      {/* Santa's Sled (appears at level 3+) */}
+      {sledPosition && <SantaSled position={sledPosition} />}
+    </group>
+  )
+}
+
 export function SceneLighting() {
   return (
     <>

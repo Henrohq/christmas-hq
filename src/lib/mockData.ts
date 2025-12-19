@@ -94,3 +94,9 @@ export const DEMO_USER: Profile = {
   updated_at: new Date().toISOString(),
 }
 
+// ============================================
+// TEST DATA: Alice Johnson with 20 messages
+// ============================================
+// This creates a "crowded tree" to test how the layout handles many decorations
+export const ALICE_CROWDED_TREE_MESSAGES = generateMockMessages('u1', 20)
+

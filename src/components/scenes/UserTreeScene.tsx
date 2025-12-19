@@ -11,7 +11,7 @@ import {
   OrnamentDecoration,
   calculateDecorationPositions 
 } from '@/components/three/MessageDecorations'
-import { SnowGround, Snowfall, Starfield, SceneLighting } from '@/components/three/Environment'
+import { SnowGround, Snowfall, Starfield, SceneLighting, LandscapeDecorations } from '@/components/three/Environment'
 import { MessageModal } from '@/components/modals/MessageModal'
 import { ComposeModal } from '@/components/modals/ComposeModal'
 import { TreeCustomizer } from '@/components/ui/TreeCustomizer'
@@ -88,28 +88,9 @@ export function UserTreeScene({ userId: propUserId, isOwnTree }: UserTreeScenePr
       setIsLoading(true)
 
       if (!isSupabaseConfigured()) {
-        // Demo mode - generate varied mock messages
-        const types = ['card', 'gift', 'ornament'] as const
-        const colors = ['#c41e3a', '#228b22', '#1e90ff', '#9932cc', '#daa520', '#ff69b4']
-        const mockMessages: Message[] = Array.from({ length: 15 }, (_, i) => ({
-          id: String(i + 1),
-          recipient_id: treeOwnerId,
-          sender_id: String((i % 5) + 1),
-          content: [
-            'Wishing you the most wonderful holiday season! 🎄',
-            'Happy Holidays! May your days be merry and bright!',
-            'Season\'s Greetings from the team!',
-            'Warmest wishes for a joyful holiday!',
-            'May your holidays sparkle with joy!',
-          ][i % 5],
-          decoration_type: types[i % 3],
-          decoration_style: colors[i % colors.length],
-          position_data: null,
-          position_index: i,
-          is_private: i === 2,
-          created_at: new Date().toISOString(),
-        }))
-        setMessages(mockMessages)
+        // Demo mode - show empty tree (Supabase not configured)
+        console.warn('Supabase not configured - showing empty tree')
+        setMessages([])
         setIsLoading(false)
         return
       }
@@ -300,6 +281,7 @@ export function UserTreeScene({ userId: propUserId, isOwnTree }: UserTreeScenePr
 
           {/* Environment */}
           <SnowGround />
+          <LandscapeDecorations decorationLevel={decorationLevel} />
           <Snowfall />
           <Starfield />
 

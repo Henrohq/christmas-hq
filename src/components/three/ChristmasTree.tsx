@@ -1,6 +1,8 @@
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { CosmicStar } from './CosmicStar'
+import { COSMIC_STAR_CONFIG } from '@/lib/specialAccess'
 
 interface ChristmasTreeProps {
   scale?: number
@@ -135,20 +137,26 @@ export function ChristmasTree({
         </mesh>
       ))}
 
-      {/* Star */}
-      <mesh ref={starRef} position={[0, 7.5, 0]} scale={[0.4, 0.4, 0.1]}>
-        <StarGeometry />
-        <meshStandardMaterial
-          color={starColor}
-          emissive={starColor}
-          emissiveIntensity={0.8}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </mesh>
+      {/* Star - Cosmic gradient or regular */}
+      {starColor === COSMIC_STAR_CONFIG.id ? (
+        <CosmicStar position={[0, 7.5, 0]} scale={[0.4, 0.4, 0.1]} />
+      ) : (
+        <>
+          <mesh ref={starRef} position={[0, 7.5, 0]} scale={[0.4, 0.4, 0.1]}>
+            <StarGeometry />
+            <meshStandardMaterial
+              color={starColor}
+              emissive={starColor}
+              emissiveIntensity={0.8}
+              roughness={0.3}
+              metalness={0.8}
+            />
+          </mesh>
 
-      {/* Star glow */}
-      <pointLight position={[0, 7.5, 0]} color={starColor} intensity={1} distance={5} />
+          {/* Star glow */}
+          <pointLight position={[0, 7.5, 0]} color={starColor} intensity={1} distance={5} />
+        </>
+      )}
 
       {/* Ornaments */}
       {ornaments.map((ornament, i) => (

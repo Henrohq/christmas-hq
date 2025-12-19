@@ -26,3 +26,4 @@ echo ""
 echo "When prompted:"
 echo "   Username: Henrohq"
 echo "   Password: [your Personal Access Token]"
+

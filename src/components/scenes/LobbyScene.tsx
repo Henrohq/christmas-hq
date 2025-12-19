@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '@/store/useStore'
 import { ChristmasTree } from '@/components/three/ChristmasTree'
 import { UserOrnament } from '@/components/three/UserOrnament'
-import { SnowGround, Snowfall, Starfield, SceneLighting } from '@/components/three/Environment'
+import { SnowGround, Snowfall, Starfield, SceneLighting, LandscapeDecorations } from '@/components/three/Environment'
 
 export function LobbyScene() {
   const navigate = useNavigate()
@@ -82,6 +82,7 @@ export function LobbyScene() {
 
           {/* Environment */}
           <SnowGround />
+          <LandscapeDecorations decorationLevel={2} />
           <Snowfall />
           <Starfield />
 

@@ -10,12 +10,10 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen'
 import { MOCK_USERS } from '@/lib/mockData'
 
 // ============================================
-// MOCK DATA TOGGLE - Easy to remove later
+// MOCK DATA - DISABLED FOR PRODUCTION
 // ============================================
-// Set to `true` to include 30 mock users for testing
-// Set to `false` to only show real users from database
-// When ready to remove: change to `false` and delete this comment block
-const INCLUDE_MOCK_USERS = true
+// Set to `true` only for local testing with mock users
+const INCLUDE_MOCK_USERS = false
 // ============================================
 
 function App() {
